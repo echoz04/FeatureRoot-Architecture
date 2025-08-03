@@ -1,29 +1,29 @@
-# Экспериментальный архитектурный шаблон для Unity Root–Logic & View
+# Experimental Architectural Pattern for Unity: Root–Logic & View
 
-Архитектурный шаблон **"FeatureRoot"** используется в моих проектах и находится в стадии доработки. 
+The **"FeatureRoot"** architectural pattern is used in my projects and is currently under development.
 
-**ВАЖНО:** Он является экспериментальным.
+**IMPORTANT:** It is experimental.
 
-Шаблон объединяет слои Root и Logic в единую управляемую часть, при этом отделяя слой View. Структура не является окончательной и будет меняться по мере необходимости.
+This pattern unifies the Root and Logic layers into a single manageable part while separating out the View layer. The structure is not final and will evolve as needed.
 
-При разработке шаблон требует четкого разделегия между Gameplay и UI логикой.
+During development, it requires a clear separation between Gameplay and UI logic.
 
-- `Root` — точка управления логикой и предоставляет общую информацию.
-- `Logic` — слой, содержащий реализацию систем.
-- `View` — подписывается на события Root'та и отображает его состояние.
+- `Root` — the control point of the logic and provides shared information.
+- `Logic` — the layer containing system implementations.
+- `View` — subscribes to Root events and displays its state.
 
-#### Преимущества:
-- Четкое разделение ответственности между логикой и визуалом,
-- Простая мастшабируемость,
-- Прозрачная точка управления логикой через Root,
-- Используется vContainer для внедрения зависимостей и управления жизненным циклом обьектов.
+#### Advantages:
+- Clear separation of concerns between logic and visual representation,
+- Easy scalability,
+- Transparent control point of logic via the Root,
+- Uses vContainer for dependency injection and lifecycle management.
 
-#### Недостатки:
-- Много кода для разделения `Root`, `Logic` и `View` для каждой фичи.
-- Архитектурный подход не доказал свою ценность.
-- Не подходит для маленьких проектов, ибо является избыточным.
+#### Disadvantages:
+- A lot of code is needed to separate `Root`, `Logic` and `View` for each feature,
+- The architectural approach has not yet proven its full value,
+- Not suitable for small projects as it is overkill.
 
-# Структура папок по сценам:
+# Folder Structure per Scene:
 
     Gameplay/
     ├── Character/...
@@ -31,11 +31,11 @@
     ├── GameplayFlow.cs
     └── GameplayScope.cs
     
-- `Scope` — класс наследующийся от `LifetimeScope`, отвечает за фазу Register (Регистрацию зависимостей и внедрения параметров).
-- `Flow` — реализует интерфейс `IStartable`, является единой точкой входа на сцену и отвечает за начальную логику и запуск серсисов.
-- Внутри папки — находится папка с фичами, например "Character/", где лежал Root, Logic и View.
+- `Scope` — a class inheriting from `LifetimeScope`, esponsible for the Register phase (registering dependencies and injecting parameters).
+- `Flow` — implements the `IStartable`, interface, acts as the single entry point for the scene and handles initial logic and service startup.
+- Inside the folder, there is a folder for features, e.g., "Character/", containing Root, Logic, and View.
 
-# Пример реализации персонажа (Gameplay):
+# Example of Character Implementation (Gameplay):
 
     Character/
     ├── Logic/
@@ -43,16 +43,16 @@
     ├── CharacterRoot.cs
     └── CharacterView.cs
     
-- `CharacterRoot` — содержит логику движения персонажа, и инициализирует их.
-- `CharacterMovementLogic` — реализует передвижене, скрывая детали от `Root'та`.
-- `CharacterView` — подписывается на события Root'та и отображает его состояние.
-- В `GameplayScope` регистрируется `CharacterRoot` с параметрами, и `CharacterView`.
+- `CharacterRoot` — contains character movement logic and initializes it.
+- `CharacterMovementLogic` — implements movement, hiding details from the `Root`.
+- `CharacterView` — subscribes to Root events and displays its state.
+- `GameplayScope` registers `CharacterRoot` with parameters and `CharacterView`.
 
-# Шаблон UI компонентов
-В UI используется набор интерфейсов и базовых классов для упрощённого управления окнами и экранами.
+# UI Components Pattern
+In the UI, a set of interfaces and base classes is used to simplify window and screen management.
 
-- `IUIView` — интерфейс с методами `Show()` и `Hide()`.
-- `BaseUIView` — абстрактный класс, который наследуется от MonoBehaviour, и реализует интерфейс`IUIView`.
-- `BaseScreen<TRoot>` — базовый класс для основных UI окон, между которыми переключается игрок.
-- `BasePopup<TRoot>` — базовый класс для всплывающих поверх окон с анимацией.
-- `BaseHUD<TRoot>` — базовый класс для постоянно видимой информации.
+- `IUIView` — interface with `Show()` and `Hide()` methods.
+- `BaseUIView` — abstract class inheriting from MonoBehaviour implementing the `IUIView` interface.
+- `BaseScreen<TRoot>` — base class for main UI windows that players switch between.
+- `BasePopup<TRoot>` — base class for animated pop-up windows layered on top.
+- `BaseHUD<TRoot>` — base class for always visible HUD information.
